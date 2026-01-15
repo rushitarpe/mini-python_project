@@ -138,3 +138,77 @@ QUESTIONS = {
         {"question": "What does 'super()' function do?", "options": ["A) Delete parent", "B) Call parent class", "C) Create superclass", "D) Override method"], "answer": "B"},
     ]
 }
+#======================Adding helper funtions=====================
+def clear_screen():
+    """Clear the console screen for better readability"""
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def display_hangman(wrong_count):
+    """Display the hangman ASCII art based on wrong answers"""
+    print(HANGMAN_STAGES[wrong_count])
+
+def display_header(lives, score, category):
+    """Display game header with current stats"""
+    print("=" * 60)
+    print(" " * 20 + "QUIZ HANGMAN GAME")
+    print("=" * 60)
+    print(f"Category: {category} | Lives Remaining: {lives} | Score: {score}")
+    print("=" * 60)
+
+def get_all_questions():
+    """Combine all questions from all categories into a single list"""
+    all_questions = []
+    for category, questions in QUESTIONS.items():
+        for question in questions:
+            question_with_category = question.copy()
+            question_with_category['category'] = category
+            all_questions.append(question_with_category)
+    return all_questions
+
+def ask_question(question_data, question_number, total_questions):
+    """Display a question and get user's answer"""
+    print(f"\nQuestion {question_number}/{total_questions}")
+    print(f"Category: {question_data['category']}")
+    print(f"\n{question_data['question']}")
+    print()
+    
+    for option in question_data['options']:
+        print(f"  {option}")
+    
+    print()
+    
+    # Input validation
+    while True:
+        answer = input("Your answer (A/B/C/D): ").strip().upper()
+        if answer in ['A', 'B', 'C', 'D']:
+            return answer
+        else:
+            print("Invalid input! Please enter A, B, C, or D.")
+
+def display_result(is_correct, correct_answer):
+    """Display whether the answer was correct or wrong"""
+    if is_correct:
+        print("\n✓ CORRECT! Well done!")
+    else:
+        print(f"\n✗ WRONG! The correct answer was: {correct_answer}")
+    print()
+
+def display_game_over(won, score, total_questions):
+    """Display the final game over screen"""
+    clear_screen()
+    print("\n" + "=" * 60)
+    
+    if won:
+        print(" " * 20 + "🎉 CONGRATULATIONS! 🎉")
+        print("=" * 60)
+        print(f"\nYou answered all questions correctly!")
+        print(f"Final Score: {score}/{total_questions}")
+        print("\nYou saved the hangman! 🎊")
+    else:
+        print(" " * 22 + "GAME OVER")
+        print("=" * 60)
+        display_hangman(6)
+        print(f"\nThe hangman is complete... You lost!")
+        print(f"Final Score: {score}/{total_questions}")
+    
+    print("=" * 60)
