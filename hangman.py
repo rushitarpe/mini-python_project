@@ -297,3 +297,8 @@ def main():
             print(" " * 12 + "Quiz Hangman Game v1.0")
             print("=" * 60 + "\n")
             break
+
+# ==================== PROGRAM EXECUTION ====================
+
+if __name__ == "__main__":
+    main()
