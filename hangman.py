@@ -212,3 +212,88 @@ def display_game_over(won, score, total_questions):
         print(f"Final Score: {score}/{total_questions}")
     
     print("=" * 60)
+    # ==================== MAIN GAME LOGIC ====================
+
+def play_game():
+    """Main game loop"""
+    MAX_LIVES = 6
+    MAX_QUESTIONS = 15  # Limit to 15 questions per game
+    lives = MAX_LIVES
+    score = 0
+    wrong_count = 0
+    
+    # Get and shuffle questions
+    all_questions = get_all_questions()
+    random.shuffle(all_questions)
+    
+    # Select only 15 random questions from the 50
+    selected_questions = all_questions[:MAX_QUESTIONS]
+    total_questions = len(selected_questions)
+    
+    clear_screen()
+    print("\n" + "=" * 60)
+    print(" " * 15 + "WELCOME TO QUIZ HANGMAN!")
+    print("=" * 60)
+    print("\nRules:")
+    print("• Answer multiple-choice quiz questions correctly to survive")
+    print("• Each wrong answer adds a body part to the hangman")
+    print(f"• You have {MAX_LIVES} lives (wrong answers allowed)")
+    print(f"• You will answer {MAX_QUESTIONS} random questions from 50 available")
+    print("• Answer all questions correctly to WIN!")
+    print("• Complete the hangman figure and you LOSE!")
+    print("\nGood luck! 🍀")
+    print("=" * 60)
+    input("\nPress Enter to start the game...")
+    
+    # Main game loop
+    for i, question_data in enumerate(selected_questions, 1):
+        clear_screen()
+        
+        # Display current game state
+        display_header(lives, score, question_data['category'])
+        display_hangman(wrong_count)
+        
+        # Ask question and get answer
+        user_answer = ask_question(question_data, i, total_questions)
+        
+        # Check if answer is correct
+        is_correct = (user_answer == question_data['answer'])
+        
+        if is_correct:
+            score += 1
+            display_result(True, question_data['answer'])
+        else:
+            lives -= 1
+            wrong_count += 1
+            display_result(False, question_data['answer'])
+        
+        # Check if game over
+        if lives == 0:
+            input("Press Enter to see final result...")
+            display_game_over(False, score, total_questions)
+            return False
+        
+        # Wait for user before continuing
+        if i < total_questions:
+            input("Press Enter to continue to next question...")
+    
+    # Player answered all questions with lives remaining - WIN!
+    display_game_over(True, score, total_questions)
+    return True
+
+def main():
+    """Main program entry point"""
+    while True:
+        play_game()
+        
+        # Ask if player wants to play again
+        print("\n" + "=" * 60)
+        play_again = input("Do you want to play again? (yes/no): ").strip().lower()
+        
+        if play_again not in ['yes', 'y']:
+            clear_screen()
+            print("\n" + "=" * 60)
+            print(" " * 15 + "Thanks for playing!")
+            print(" " * 12 + "Quiz Hangman Game v1.0")
+            print("=" * 60 + "\n")
+            break
